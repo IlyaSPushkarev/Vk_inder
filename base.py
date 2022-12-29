@@ -29,11 +29,11 @@ class View(Base):
     __tablename__ = 'view'
     id = Column(Integer, primary_key=True)
     viewed_user = Column(Integer, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.user'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
-    user = relationship(User, backref='views')
+    user = relationship(user_id, backref='views')
 
-    def __init__(self, viewed_user: int, user_id: int):
+    def __init__(self, viewed_user: int, user.id: int):
         super().__init__()
         self.viewed_user = viewed_user
         self.user_id = user_id
@@ -43,9 +43,9 @@ class Like(Base):
     __tablename__ = 'like'
     id = Column(Integer, primary_key=True)
     liked_user = Column(Integer, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.user'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
-    user = relationship(User, backref='likes')
+    user = relationship(user.id, backref='likes')
 
     def __init__(self, liked_user: int, user_id: int):
         super().__init__()
