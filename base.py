@@ -10,15 +10,15 @@ Session = sessionmaker(bind=engine)
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    user = Column(Integer, nullable=False)
+    user_id = Column(Integer, nullable=False)
     sex = Column(Integer, nullable=False)
     age = Column(Integer, nullable=False)
     city = Column(String, nullable=False)
     relation = Column(Integer, nullable=False)
 
-    def __init__(self, user: int, sex: int, age: int, city: str, relation: int):
+    def __init__(self, user_id: int, sex: int, age: int, city: str, relation: int):
         super().__init__()
-        self.user = user
+        self.user_id = user_id
         self.sex = sex
         self.age = age
         self.city = city
@@ -29,11 +29,11 @@ class View(Base):
     __tablename__ = 'view'
     id = Column(Integer, primary_key=True)
     viewed_user = Column(Integer, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)
 
-    user = relationship(user_id, backref='views')
+    user = relationship(User, backref='views')
 
-    def __init__(self, viewed_user: int, user.id: int):
+    def __init__(self, viewed_user: int, user_id: int):
         super().__init__()
         self.viewed_user = viewed_user
         self.user_id = user_id
@@ -43,9 +43,9 @@ class Like(Base):
     __tablename__ = 'like'
     id = Column(Integer, primary_key=True)
     liked_user = Column(Integer, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)
 
-    user = relationship(user.id, backref='likes')
+    user = relationship(User, backref='likes')
 
     def __init__(self, liked_user: int, user_id: int):
         super().__init__()
@@ -55,7 +55,7 @@ class Like(Base):
 
 def is_user(user_id):
     with Session() as session:
-        users = session.query(User).filter(User.user == user_id).all()
+        users = session.query(User).filter(User.user_id == user_id).all()
     return True if users else False
 
 
@@ -72,7 +72,7 @@ def get_user_from_db(user_id):
 
 
 def add_new_user_in_db(user_id, age, sex_id, relation_id, city):
-    user = User(user=user_id, age=age, sex=sex_id, city=city, relation=relation_id)
+    user = User(user_id=user_id, age=age, sex=sex_id, city=city, relation=relation_id)
     session = Session()
     try:
         session.add(user)
