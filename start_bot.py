@@ -1,3 +1,4 @@
+import logging
 from vkbottle.bot import Bot, BotLabeler
 
 from base import create_tables
@@ -7,8 +8,9 @@ from callbacks import callback_labeler
 from config import state_dispenser, COMMUNITY_TOKEN
 
 
-base_labeler = BotLabeler()
+logging.getLogger('vkbottle').setLevel(logging.CRITICAL)
 
+base_labeler = BotLabeler()
 labelers = [chat_labeler, states_labeler, callback_labeler, callback_labeler]
 for labeler in labelers:
     base_labeler.load(labeler)

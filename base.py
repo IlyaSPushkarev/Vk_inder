@@ -3,14 +3,14 @@ from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 
 Base = declarative_base()
-engine = create_engine('postgresql+psycopg2://ilya:123456@localhost:5432/vkinder', echo=False)
+engine = create_engine('postgresql://postgres:123456@localhost:5432/vkinder', echo=False)
 Session = sessionmaker(bind=engine)
 
 
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, nullable=False, unique=True)
     sex = Column(Integer, nullable=False)
     age = Column(Integer, nullable=False)
     city = Column(String, nullable=False)
@@ -67,7 +67,7 @@ def is_viewed(user_id, viewed_user_id):
 
 def get_user_from_db(user_id):
     with Session() as session:
-        user = session.query(User).filter(User.user == user_id).first()
+        user = session.query(User).filter(User.user_id == user_id).first()
     return user
 
 

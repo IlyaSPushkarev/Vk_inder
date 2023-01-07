@@ -22,7 +22,7 @@ async def search_users(user):
         'offset': 0,
         'count': 1000,
         'has_photo': 1,
-        'sex': reversed_sex_table[user.sex],
+        'sex': reversed_sex_table[user.sex_id],
         'hometown': user.city,
         'age_from': user.age,
         'age_to': user.age,
@@ -54,7 +54,7 @@ async def search_users(user):
             continue
         elif not user_in_issuance.can_write_private_message:
             continue
-        elif is_viewed(user.user, user_in_issuance.id):
+        elif is_viewed(user.user_id, user_in_issuance.id):
             continue
         suitable_users.append(user_in_issuance)
     return suitable_users
@@ -95,9 +95,9 @@ async def send_user(user, message, change_message=True, liked=False, last=False)
         return
 
     if change_message:
-        await message.edit_message(text=text, attachment=photos, keyboard=carousel_keyboard)
+        await message.edit_message(message=text, attachment=photos, keyboard=carousel_keyboard)
     else:
-        await message.send_message(text=text, attachment=photos, keyboard=carousel_keyboard)
+        await message.send_message(message=text, attachment=photos, keyboard=carousel_keyboard)
 
 
 @callback_labeler.raw_event(GroupEventType.MESSAGE_EVENT, MessageEvent, PayloadRule({'cmd': 'open_link'}))
@@ -144,5 +144,5 @@ async def like_user(event: MessageEvent):
         await send_user(liked_user, message=event, change_message=False, last=True)
         ctx.set('users', [])
         return
-    await send_user(liked_user, message=event, change_message=False)
+    await send_user(first_user_found, message=event, change_message=False)
     ctx.set('users', found_users[1:])
